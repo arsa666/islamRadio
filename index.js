@@ -124,7 +124,7 @@ win.add(webViewButton);
 // player to keep playing when the app is in the 
 // background.
 var audioPlayer = Ti.Media.createAudioPlayer({ 
-    url: 'http://107.170.87.104:8000/shak',
+    url: 'http://107.170.87.104:8000/stream',
     allowBackground: true
 });           
     
@@ -141,7 +141,7 @@ stopButton.addEventListener('click', function() {
 });
 
 webViewButton.addEventListener('click', function() {
-  	var webview = Titanium.UI.createWebView({url:'http://107.170.87.104:8000/shak'});
+  	var webview = Titanium.UI.createWebView({url:'http://107.170.87.104:8000/stream'});
     var window = Titanium.UI.createWindow();
     window.add(webview);
     window.open({modal:true});
