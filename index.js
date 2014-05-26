@@ -4,10 +4,9 @@ function getDate(what){
 	var month = currentTime.getMonth() + 1;
 	var day = currentTime.getDate();
 	var year = currentTime.getFullYear();
- 	if(what == 'month'){
+ 	if(what === 'month'){
  		return month;
- 	} else if (what == 'day')
- 	{
+ 	} else if (what === 'day'){
  		return day;
  	} else {
 		return day+"/"+month+"/"+year;
@@ -15,13 +14,11 @@ function getDate(what){
 };
 
 //To make the program work you will need to have added the NamazTimes.sqlite file to Resources/myData
-
 Ti.Database.install('/myData/NamazTimes.sqlite', 'NamazTimes');
 var db = Ti.Database.open('NamazTimes');
 var dayValues = db.execute('select * from NamazTimes where mes=' + getDate('month') + ' and dia='+getDate('day') + ';');
 
-while (dayValues.isValidRow())
-{
+while (dayValues.isValidRow()){
 	var fajr = dayValues.fieldByName('Fazar');
 	var zohar = dayValues.fieldByName('Zohar');
 	var asar = dayValues.fieldByName('Asar');
@@ -29,8 +26,13 @@ while (dayValues.isValidRow())
 	var isha = dayValues.fieldByName('Isha');
 	dayValues.next();
 }
+
 dayValues.close();
 db.close();
+
+
+// create tab group
+var tabGroup = Titanium.UI.createTabGroup();
 
 var date = Ti.UI.createLabel({
 	color:'#CC9900',
@@ -84,12 +86,28 @@ var table = Ti.UI.createTableView({
 	data:tableData
 });
 
-var win = Titanium.UI.createWindow({  
+var win = Titanium.UI.createWindow({
     title:'Islam Radio',
     backgroundColor:'#fff',
     layout: 'vertical',
-    exitOnClose:true   
+    exitOnClose:true
 });
+
+
+var namazWin = Titanium.UI.createWindow({
+    title:'Namaz Times/Horario',
+    backgroundColor:'#fff',
+    layout: 'vertical',
+    exitOnClose:true
+});
+
+var jamatWin = Titanium.UI.createWindow({
+    title:'Jamat Times/Horario',
+    backgroundColor:'#fff',
+    layout: 'vertical',
+    exitOnClose:true
+});
+
 
 var playButton = Titanium.UI.createButton({
     title:'Play Radio/Iniciar Radio',
@@ -113,21 +131,20 @@ var webViewButton = Titanium.UI.createButton({
     height:40
 });
 
-win.add(date);
-prayerView.add(table);
-win.add(prayerView);
 win.add(playButton);
 win.add(stopButton);
 win.add(webViewButton);
-
-// allowBackground: true on Android allows the 
-// player to keep playing when the app is in the 
+namazWin.add(date);
+prayerView.add(table);
+namazWin.add(prayerView);
+// allowBackground: true on Android allows the
+// player to keep playing when the app is in the
 // background.
-var audioPlayer = Ti.Media.createAudioPlayer({ 
+var audioPlayer = Ti.Media.createAudioPlayer({
     url: 'http://107.170.87.104:8000/stream',
     allowBackground: true
-});           
-    
+});
+
 playButton.addEventListener('click',function() {
     audioPlayer.start();
    	playButton.enabled = false;
@@ -156,12 +173,26 @@ audioPlayer.addEventListener('change',function(e)
     Ti.API.info('State: ' + e.description + ' (' + e.state + ')');
 });
 
-win.addEventListener('close',function() {
-     // audioPlayer.stop();
-    // if (Ti.Platform.osname === 'android')
-    // { 
-        // audioPlayer.release();
-    // }
+
+var tab1 = Titanium.UI.createTab({
+    icon:'KS_nav_views.png',
+    title:'Radio',
+    window:win
 });
 
-win.open();
+var tab2 = Titanium.UI.createTab({
+    icon:'KS_nav_views.png',
+    title:'Namaz Times',
+    window:namazWin
+});
+
+var tab3 = Titanium.UI.createTab({
+    icon:'KS_nav_views.png',
+    title:'Jamat Times',
+    window:jamatWin
+});
+
+tabGroup.addTab(tab1);
+tabGroup.addTab(tab2);
+tabGroup.addTab(tab3);
+tabGroup.open();
