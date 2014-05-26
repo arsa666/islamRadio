@@ -65,7 +65,7 @@ var date = Ti.UI.createLabel({
 
 var table1 =  Titanium.UI.createTableView({
     data:[
-        {title:"Fajr ............................. " + fajr + " a.m", right: 10},
+        {title:"Fajr ............................. " + fajr + " a.m"},
         {title:"Zohar ............................ " + zohar + " p.m"},
         {title:"Asar ............................. " + asar + " p.m"},
         {title:"Magrib ........................... " + magrib + " p.m"},
@@ -88,7 +88,17 @@ var xhr = Ti.Network.createHTTPClient();
 
     xhr.onload = function(){
                  response = JSON.parse(this.responseText);
-                Ti.API.info(response);
+                var tableJamat =  Titanium.UI.createTableView({
+                    data:[
+                        {title:"Fajr ............................. " + response['fajr'] + " a.m"},
+                        {title:"Zohar ............................ " + response['zohar'] + " p.m"},
+                        {title:"Asar ............................. " + response['asar'] + " p.m"},
+                        {title:"Magrib ........................... " + response['magrib'] + " p.m"},
+                        {title:"Isha ............................. " + response['isha'] + " p.m"}
+                    ]
+                });
+
+                jamatWin.add(tableJamat);
  };
 
 /////////// Radio//////////////////////////////////////////
